@@ -1,8 +1,9 @@
 <template>
   <div class="layout-row">
     <div class="tile layout-column inputs">
+      <label>Angle <input v-model="angle"></label>
       <label>Start <input v-model="axiom"></label>
-      <label>Rule G <input v-model="rule1"></label>
+      <label v-for="s in usedSymbols">{{s}} <input v-model="rules[s]"></label>
       <div class="layout-column expansions">
         <span class="mono">{{axiom}}</span>
         <span class="mono">{{calc1}}</span>
@@ -10,7 +11,7 @@
         <span class="mono">{{calc3}}</span>
       </div>
     </div>
-    <canvas class="tile"></canvas>
+    <canvas class="tile" ref="canvas"></canvas>
   </div>
 </template>
 
@@ -20,17 +21,48 @@
     name: 'HelloWorld',
     data () {
       return {
+        angle: '12.5',
         axiom: 'G',
-        rule1: '-G-'
+        rules: {
+          G: 'G-'
+        }
       }
     },
     computed: {
-      rules () {
-        return {'G': this.rule1}
+      usedSymbols () {
+        let s = new Set()
+        let addSymbolsOfRule = (rule) => {
+          for (let c of rule) {
+            if (lsystem.terminalSymbols.has(c)) continue
+            if (!s.has(c)) {
+              s.add(c)
+              let rule = this.rules[c]
+              if (rule) addSymbolsOfRule(rule)
+            }
+          }
+        }
+        addSymbolsOfRule(this.axiom)
+        return [...s.keys()]
       },
       calc1 () { return lsystem.expand(this.axiom, this.rules) },
       calc2 () { return lsystem.expand(this.calc1, this.rules) },
       calc3 () { return lsystem.expand(this.calc2, this.rules) }
+    },
+    watch: {
+      calc3 (value) {
+        this.render()
+      }
+    },
+    mounted () {
+      this.render()
+    },
+    methods: {
+      render () {
+        let canvas = this.$refs.canvas
+        let ctx = canvas.getContext('2d')
+        console.log('rendering:', this.calc3)
+        lsystem.render(this.calc3, ctx)
+      }
     }
   }
 </script>
@@ -79,6 +111,7 @@
     border-top: none;
   }
   .mono {
-    /* font-family: monospace; */
+    font-family: monospace;
+    font-size: 17px;
   }
 </style>

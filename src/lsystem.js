@@ -6,3 +6,10 @@ export function expand (axiom, rules) {
   }
   return result
 }
+
+export const terminalSymbols = new Set('-+[]{.}')
+
+export function render (s, ctx) {
+  ctx.fillStyle = 'green'
+  ctx.fillRect(10, 10, 100, 100)
+}
