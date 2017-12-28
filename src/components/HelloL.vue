@@ -11,20 +11,21 @@
         <span class="mono">{{calc3}}</span>
       </div>
     </div>
-    <canvas class="tile" ref="canvas"></canvas>
+    <canvas width="440" height="440" ref="canvas"></canvas>
   </div>
 </template>
 
 <script>
   import * as lsystem from '../lsystem.js'
   export default {
-    name: 'HelloWorld',
+    /* name: 'HelloWorld', */
     data () {
       return {
-        angle: '12.5',
-        axiom: 'G',
+        angle: '10',
+        axiom: 'GGGGGG',
         rules: {
-          G: 'G-'
+          G: 'G++[F]',
+          F: '-----F---[G]'
         }
       }
     },
@@ -51,6 +52,9 @@
     watch: {
       calc3 (value) {
         this.render()
+      },
+      angle (value) {
+        this.render()
       }
     },
     mounted () {
@@ -59,9 +63,8 @@
     methods: {
       render () {
         let canvas = this.$refs.canvas
-        let ctx = canvas.getContext('2d')
         console.log('rendering:', this.calc3)
-        lsystem.render(this.calc3, ctx)
+        lsystem.render(canvas, this.calc3, this.angle)
       }
     }
   }
@@ -84,8 +87,8 @@
     /* border: 1px; */
   }
   canvas {
-    min-width: 300px;
-    min-height: 300px;
+    /* min-width: 300px; */
+    /* min-height: 300px; */
     background-color: #EED;
     border: 4px solid;
     border-color: #ddd;
