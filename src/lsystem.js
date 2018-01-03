@@ -38,10 +38,15 @@ export function render (canvas, s, angle) {
       // let x0 = x, y0 = y
       ctx.beginPath()
       ctx.moveTo(x, y)
+      ctx.lineWidth = 0.1 + Math.random()*5
       x += lineLength * Math.cos(phi)
       y += lineLength * Math.sin(phi)
       ctx.lineTo(x, y)
       ctx.stroke()
+    }
+    if (c === ' ') {
+      x += lineLength * Math.cos(phi)
+      y += lineLength * Math.sin(phi)
     }
   }
 }
