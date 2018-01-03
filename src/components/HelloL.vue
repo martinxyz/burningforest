@@ -11,7 +11,9 @@
         <span class="mono">{{calc3}}</span>
       </div>
     </div>
-    <canvas width="440" height="440" ref="canvas"></canvas>
+    <div>
+      <canvas width="440" height="440" ref="canvas"></canvas>
+    </div>
   </div>
 </template>
 
