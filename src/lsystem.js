@@ -1,15 +1,23 @@
 export function expand (axiom, rules) {
+  const limit = 5000
   let result = ''
   for (let i = 0, len = axiom.length; i < len; i++) {
     let c = axiom.charAt(i)
     result += rules[c] || c
+    if (result.length > limit) break
   }
   return result
 }
 
 export const terminalSymbols = new Set('-+[]{.}')
 
-export function render (canvas, s, angle) {
+export function render (canvas, system) {
+  let s = system.axiom
+  if (!system.iterations) system.iterations = 3
+  for (let i = 0; i < system.iterations; i++) {
+    s = expand(s, system.rules)
+  }
+
   let ctx = canvas.getContext('2d')
   // ctx.fillStyle = '#ffff'
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -19,8 +27,8 @@ export function render (canvas, s, angle) {
 
   ctx.lineWidth = 3
 
-  const phiStep = angle / 360 * 2 * Math.PI
-  const lineLength = 20
+  const phiStep = system.angle / 360 * 2 * Math.PI
+  const lineLength = system.lineLength || 20
   let x = canvas.width / 2
   let y = 3 * canvas.height / 4
   let phi = -Math.PI / 2
@@ -38,7 +46,7 @@ export function render (canvas, s, angle) {
       // let x0 = x, y0 = y
       ctx.beginPath()
       ctx.moveTo(x, y)
-      ctx.lineWidth = 0.1 + Math.random()*5
+      ctx.lineWidth = 0.1 + Math.random() * 5
       x += lineLength * Math.cos(phi)
       y += lineLength * Math.sin(phi)
       ctx.lineTo(x, y)

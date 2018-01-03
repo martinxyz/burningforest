@@ -11,16 +11,15 @@
         <span class="mono">{{calc3}}</span>
       </div>
     </div>
-    <div>
-      <canvas width="440" height="440" ref="canvas"></canvas>
-    </div>
+    <l-display :system="system" />
   </div>
 </template>
 
 <script>
   import * as lsystem from '../lsystem.js'
+  import _ from 'lodash'
+
   export default {
-    /* name: 'HelloWorld', */
     data () {
       return {
         angle: '10',
@@ -49,24 +48,14 @@
       },
       calc1 () { return lsystem.expand(this.axiom, this.rules) },
       calc2 () { return lsystem.expand(this.calc1, this.rules) },
-      calc3 () { return lsystem.expand(this.calc2, this.rules) }
-    },
-    watch: {
-      calc3 (value) {
-        this.render()
-      },
-      angle (value) {
-        this.render()
-      }
-    },
-    mounted () {
-      this.render()
-    },
-    methods: {
-      render () {
-        let canvas = this.$refs.canvas
-        console.log('rendering:', this.calc3)
-        lsystem.render(canvas, this.calc3, this.angle)
+      calc3 () { return lsystem.expand(this.calc2, this.rules) },
+      system () {
+        return {
+          axiom: this.axiom,
+          rules: _.clone(this.rules),
+          angle: this.angle,
+          iterations: 3
+        }
       }
     }
   }
@@ -87,13 +76,6 @@
     margin: 8px;
     /* border-color: #eee; */
     /* border: 1px; */
-  }
-  canvas {
-    /* min-width: 300px; */
-    /* min-height: 300px; */
-    background-color: #EED;
-    border: 4px solid;
-    border-color: #ddd;
   }
   .inputs label {
     margin-bottom: 5px;
