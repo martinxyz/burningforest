@@ -1,6 +1,7 @@
 import cairo
 import math
 import numpy
+import random
 
 
 def expand(system):
@@ -21,7 +22,6 @@ def expand(system):
 def render(system):
     w, h = system.get('w', 200), system.get('h', 200)
     s = expand(system)
-    print('x', s)
     surface = cairo.ImageSurface(cairo.Format.ARGB32, w, h)
     ctx = cairo.Context(surface)
     ctx.set_line_width(3)
@@ -44,6 +44,7 @@ def render(system):
                 x, y, phi = stack.pop()
         else:
             ctx.move_to(x, y)
+            ctx.set_line_width(0.1 + random.random() * 5)
             x += line_length * math.cos(phi)
             y += line_length * math.sin(phi)
             if c != ' ':
@@ -51,7 +52,7 @@ def render(system):
                 ctx.stroke()
 
     return numpy.ndarray(
-      shape=(w, h),
+      shape=(h, w),
       dtype=numpy.uint32,
       buffer=surface.get_data()
     )
