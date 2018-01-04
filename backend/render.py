@@ -16,6 +16,8 @@ def expand(system):
             # s_new += random.choice(rules.get(c, [c]))
             s_new += rules.get(c, c)
         s = s_new
+        if len(s) > limit:
+            break
     return s[:limit]
 
 
@@ -52,10 +54,10 @@ def render(system):
                 ctx.stroke()
 
     return numpy.ndarray(
-      shape=(h, w),
-      dtype=numpy.uint32,
+      shape=(h, w, 4),
+      dtype=numpy.uint8,
       buffer=surface.get_data()
-    )
+    )[:,:,3]
 
 
 if __name__ == '__main__':

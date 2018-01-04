@@ -20,9 +20,11 @@ def sample_system(pvals):
         'w': 67,
         'h': 126,
         'axiom': 'S',
-        'lineLength': 20 * random.random(),
-        'angle': 1 + 180 * random.random(),
-        'iterations': math.ceil(random.random() * 5),
+        'lineLength': 1.0 * random.random(),
+        # 'angle': 1 + 180 * random.random(),
+        'angle': 45,
+        # 'iterations': math.ceil(random.random() * 5),
+        'iterations': 8,
         'rules': {
           'S': sample_rule(pvals),
           'J': sample_rule(pvals),
@@ -43,7 +45,7 @@ def evaluate_system(system):
 def evaluate_pvals(system):
     best_loss = None
     best_buf = None
-    for i in range(5):
+    for i in range(20):
         system = sample_system(pvals)
         loss, buf = evaluate_system(system)
         if best_loss is None or loss < best_loss:
@@ -55,7 +57,7 @@ def evaluate_pvals(system):
 if __name__ == '__main__':
     iterations = 200
 
-    best_factor = 0.01
+    best_factor = 0.02
     evaluations = 1000
 
     symbol_a = np.ones(len(symbols))
