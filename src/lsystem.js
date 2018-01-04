@@ -4,9 +4,8 @@ export function expand (axiom, rules) {
   for (let i = 0, len = axiom.length; i < len; i++) {
     let c = axiom.charAt(i)
     result += rules[c] || c
-    if (result.length > limit) break
   }
-  return result
+  return result.slice(0, limit)
 }
 
 export const terminalSymbols = new Set('-+[]{.}')

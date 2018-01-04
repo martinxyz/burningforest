@@ -14,3 +14,4 @@ yarn-error.log*
 *.sln
 /backend/render-test.png
 ga-test-*.png
+/backend/__pycache__/render.cpython-36.pyc

@@ -1,5 +1,5 @@
 <template>
-  <canvas :width="size" :height="size" ref="canvas"></canvas>
+  <canvas :width="width" :height="height" ref="canvas"></canvas>
 </template>
 
 <script>
@@ -7,7 +7,10 @@
   export default {
     props: {
       system: Object,
-      size: {
+      width: {
+        default: 450
+      },
+      height: {
         default: 450
       }
     },
@@ -30,8 +33,6 @@
 
 <style scoped>
   canvas {
-    /* min-width: 300px; */
-    /* min-height: 300px; */
     background-color: #FFD;
     border: 1px solid;
     margin: 2px;
