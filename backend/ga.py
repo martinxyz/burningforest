@@ -5,7 +5,7 @@ import random
 import numpy as np
 # import numpy.random
 import matplotlib.pyplot as plt
-import math
+import scipy.misc
 import dirichlet  # https://github.com/ericsuh/dirichlet
 
 symbols = 'SJKLA+-[]\t'  # \t for end-of-sequence
@@ -20,11 +20,13 @@ def sample_system(pvals):
         'w': 67,
         'h': 126,
         'axiom': 'S',
-        'lineLength': 1.0 * random.random(),
+        # 'lineLength': 1.0 * random.random(),
+        'lineLength': 8,
+        'lineWidth': 4,
         # 'angle': 1 + 180 * random.random(),
-        'angle': 45,
+        'angle': 12,
         # 'iterations': math.ceil(random.random() * 5),
-        'iterations': 8,
+        'iterations': 3,
         'rules': {
           'S': sample_rule(pvals),
           'J': sample_rule(pvals),
@@ -35,10 +37,21 @@ def sample_system(pvals):
     }
     return system
 
-
+value_img = scipy.misc.imread('./template1.png')[:,:,0]
 def evaluate_system(system):
     buf = render.render(system)
-    loss = -buf.mean()
+
+    loss = -(buf.astype('float') * (value_img.astype('float') - 127)).mean()
+    # if loss < -100:
+    if False:
+        plt.figure(5)
+        plt.clf()
+        plt.imshow(buf.astype('float') * (value_img.astype('float') - 127))
+        plt.colorbar()
+        plt.draw()
+        plt.pause(2.5)
+
+    # loss = -buf.mean()
     return loss, buf
 
 

@@ -30,6 +30,7 @@ def render(system):
 
     line_length = system.get('lineLength', 20)
     phi_step = system.get('angle', 20) / 360 * 2 * math.pi
+    ctx.set_line_width(system.get('lineWidth', 2))
     x = w / 2
     y = 3 * h / 4
     phi = - math.pi
@@ -46,7 +47,7 @@ def render(system):
                 x, y, phi = stack.pop()
         else:
             ctx.move_to(x, y)
-            ctx.set_line_width(0.1 + random.random() * 5)
+            # ctx.set_line_width(0.1 + random.random() * 5)
             x += line_length * math.cos(phi)
             y += line_length * math.sin(phi)
             if c != ' ':
