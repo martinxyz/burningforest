@@ -6,9 +6,12 @@ import numpy as np
 # import numpy.random
 import matplotlib.pyplot as plt
 import scipy.misc
+import dask
+import dask.multiprocessing
 import dirichlet  # https://github.com/ericsuh/dirichlet
 
 symbols = 'SJKLA+-[]\t'  # \t for end-of-sequence
+
 
 def sample_system(pvals):
     def sample_rule(pvals):
@@ -21,10 +24,10 @@ def sample_system(pvals):
         'h': 126,
         'axiom': 'S',
         # 'lineLength': 1.0 * random.random(),
-        'lineLength': 8,
-        'lineWidth': 4,
+        'lineLength': 4,
+        'lineWidth': 8,
         # 'angle': 1 + 180 * random.random(),
-        'angle': 12,
+        'angle': 20,
         # 'iterations': math.ceil(random.random() * 5),
         'iterations': 3,
         'rules': {
@@ -55,7 +58,7 @@ def evaluate_system(system):
     return loss, buf
 
 
-def evaluate_pvals(system):
+def evaluate_pvals(pvals):
     best_loss = None
     best_buf = None
     for i in range(20):
@@ -64,14 +67,14 @@ def evaluate_pvals(system):
         if best_loss is None or loss < best_loss:
             best_loss = loss
             best_buf = buf
-    return best_loss, best_buf
+    return (best_loss, pvals, best_buf)
 
 
-if __name__ == '__main__':
-    iterations = 200
+def main():
+    iterations = 150
 
     best_factor = 0.02
-    evaluations = 1000
+    evaluations = 5000
 
     symbol_a = np.ones(len(symbols))
     # sentinel_a = np.ones(10)
@@ -81,20 +84,20 @@ if __name__ == '__main__':
     for it in range(iterations):
         print('iteration', it)
         sample = []
-        loss_best = None
-        res_best = None
         for i in range(evaluations):
             pvals = np.random.dirichlet(symbol_a)
-            # pvals_sentinel = np.random.dirichlet(sentinel_a)
-            loss, buf = evaluate_pvals(pvals)
-            sample.append((loss, pvals, buf))
+            res = dask.delayed(evaluate_pvals)(pvals)
+            sample.append(res)
+
+        sample = dask.compute(*sample, get=dask.multiprocessing.get)
+        sample = list(sample)
 
         sample.sort(key=lambda s: s[0])
         sample_loss = np.array([s[0] for s in sample])
         sample_pvals = np.array([s[1] for s in sample])
         sample_buf = np.array([s[2] for s in sample])
 
-        res_best = sample_buf[1]
+        res_best = sample_buf[0]
 
         print('mean loss was', sample_loss.mean())
         print('min loss was', sample_loss.min())
@@ -108,7 +111,6 @@ if __name__ == '__main__':
 
         # estimate new dirichlet distribution
         new_symbol_a = dirichlet.mle(sample_pvals[:int(evaluations*best_factor), :])
-        print('old symbol_a:', symbol_a)
         print('new symbol_a:', new_symbol_a)
         # symbol_a = 0.5 * symbol_a + 0.5 * new_symbol_a
         symbol_a = new_symbol_a
@@ -119,3 +121,6 @@ if __name__ == '__main__':
         plt.gray()
         plt.draw()
         plt.pause(0.1)
+
+if __name__ == '__main__':
+    main()
