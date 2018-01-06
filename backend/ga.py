@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 
 import render
-import random
 import numpy as np
-# import numpy.random
 import matplotlib.pyplot as plt
 import scipy.misc
 import dask
 import dask.multiprocessing
-import dirichlet  # https://github.com/ericsuh/dirichlet
+import repr
 
 symbols = 'SJKLA+-[]\t'  # \t for end-of-sequence
 
 
-def sample_system(pvals):
+def sample_system(ind):
     def sample_rule(pvals):
         symlist = np.random.choice(list(symbols), 80, p=pvals)
         rule = ''.join(symlist).split('\t')[0]
@@ -24,18 +22,18 @@ def sample_system(pvals):
         'h': 126,
         'axiom': 'S',
         # 'lineLength': 1.0 * random.random(),
-        'lineLength': 4,
-        'lineWidth': 8,
+        'lineLength': ind['lineLength'] * 12,
+        'lineWidth': ind['lineWidth'] * 12,
         # 'angle': 1 + 180 * random.random(),
-        'angle': 20,
+        'angle': ind['angle'] * 50,
         # 'iterations': math.ceil(random.random() * 5),
         'iterations': 3,
         'rules': {
-          'S': sample_rule(pvals),
-          'J': sample_rule(pvals),
-          'K': sample_rule(pvals),
-          'L': sample_rule(pvals),
-          'A': sample_rule(pvals)
+          'S': sample_rule(ind['pvals']),
+          'J': sample_rule(ind['pvals']),
+          'K': sample_rule(ind['pvals']),
+          'L': sample_rule(ind['pvals']),
+          'A': sample_rule(ind['pvals'])
         }
     }
     return system
@@ -58,16 +56,16 @@ def evaluate_system(system):
     return loss, buf
 
 
-def evaluate_pvals(pvals):
+def evaluate_ind(ind):
     best_loss = None
     best_buf = None
     for i in range(20):
-        system = sample_system(pvals)
+        system = sample_system(ind)
         loss, buf = evaluate_system(system)
         if best_loss is None or loss < best_loss:
             best_loss = loss
             best_buf = buf
-    return (best_loss, pvals, best_buf)
+    return (best_loss, ind, best_buf)
 
 
 def main():
@@ -76,17 +74,19 @@ def main():
     best_factor = 0.02
     evaluations = 5000
 
-    symbol_a = np.ones(len(symbols))
-    # sentinel_a = np.ones(10)
-    # create slight bias towards equal probability of all symbols
-    symbol_a *= 2
+    population = repr.Population({
+        'pvals': repr.DirichletParam(len(symbols)),
+        'lineWidth': repr.BetaParam(),
+        'lineLength': repr.BetaParam(),
+        'angle': repr.BetaParam(),
+    })
 
     for it in range(iterations):
         print('iteration', it)
         sample = []
         for i in range(evaluations):
-            pvals = np.random.dirichlet(symbol_a)
-            res = dask.delayed(evaluate_pvals)(pvals)
+            ind = population.sample()
+            res = dask.delayed(evaluate_ind)(ind)
             sample.append(res)
 
         sample = dask.compute(*sample, get=dask.multiprocessing.get)
@@ -94,13 +94,15 @@ def main():
 
         sample.sort(key=lambda s: s[0])
         sample_loss = np.array([s[0] for s in sample])
-        sample_pvals = np.array([s[1] for s in sample])
+        sample_inds = np.array([s[1] for s in sample])
         sample_buf = np.array([s[2] for s in sample])
 
         res_best = sample_buf[0]
 
-        print('mean loss was', sample_loss.mean())
+        print(50 * '-')
+        print('best ind:', sample_inds[0])
         print('min loss was', sample_loss.min())
+        print('mean loss was', sample_loss.mean())
         plt.ion()
         plt.figure(1)
         plt.clf()
@@ -109,11 +111,10 @@ def main():
         # plt.show()
         plt.pause(0.1)
 
-        # estimate new dirichlet distribution
-        new_symbol_a = dirichlet.mle(sample_pvals[:int(evaluations*best_factor), :])
-        print('new symbol_a:', new_symbol_a)
-        # symbol_a = 0.5 * symbol_a + 0.5 * new_symbol_a
-        symbol_a = new_symbol_a
+        # estimate new distribution
+        top_inds = sample_inds[:int(evaluations*best_factor)]
+        population.update(top_inds)
+        print('population:', population)
 
         plt.figure(2)
         plt.clf()
