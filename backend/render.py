@@ -61,7 +61,15 @@ def render(system):
             y += line_length * math.sin(phi)
             if c != ' ':
                 ctx.line_to(x, y)
+
+                # causes out of memory:
+                # ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+
                 ctx.stroke()
+
+                # causes out of memory:
+                # ctx.arc(x, y, line_width, 0, 2*math.pi)
+                # ctx.fill()
 
     return numpy.ndarray(
       shape=(h, w, 4),

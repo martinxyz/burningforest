@@ -32,7 +32,7 @@ class DirichletParam:
         try:
             mle = dirichlet.mle(np.array(samples))
         except Exception as err:
-            print(err)
+            print('DIRICHLET EXCEPTION', err)
             mle = self.alpha
 
         # avoid the above exception in the first place

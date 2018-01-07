@@ -50,7 +50,7 @@ def sample_system(ind):
         'limit': 5000,
         'lineLength': 5*4,
         'lineWidth': 3*4,
-        'scaleStep': logrange(ind['scaleStep'], 1.0, 1.2),
+        'scaleStep': 1.0 + logrange(ind['scaleStep'], 0.001, 0.5),
         'angle': logrange(ind['angle'], 5, 200),
         'angle0': ind['angle0'] * 180,
         'iterations': math.floor(ind['iterations'] * 5),
@@ -58,7 +58,7 @@ def sample_system(ind):
           'S': sample_rule(ind['S']),
           'J': sample_rule(ind['J']),
           'K': sample_rule(ind['K']),
-          'L': sample_rule(ind['L']),
+          # 'L': sample_rule(ind['L']),
           # 'A': sample_rule(ind['A'])
         }
     }
@@ -115,7 +115,7 @@ def evaluate_system(system):
 def evaluate_ind(ind):
     best_loss = None
     best_buf = None
-    for i in range(50):
+    for i in range(200):
         system = sample_system(ind)
         loss, buf = evaluate_system(system)
         if best_loss is None or loss < best_loss:
@@ -125,7 +125,7 @@ def evaluate_ind(ind):
 
 
 def main():
-    iterations = 150
+    iterations = 15000
 
     best_factor = 0.01
     evaluations = 5000
@@ -135,7 +135,7 @@ def main():
         'S': repr.DirichletParam(len(symbols)),
         'J': repr.DirichletParam(len(symbols)),
         'K': repr.DirichletParam(len(symbols)),
-        'L': repr.DirichletParam(len(symbols)),
+        # 'L': repr.DirichletParam(len(symbols)),
         # 'A': repr.DirichletParam(len(symbols)),
         'iterations': repr.BetaParam(),
         'lineWidth': repr.BetaParam(),
@@ -148,6 +148,12 @@ def main():
         # 'K-enable': repr.BernoulliParam(),
         # 'L-enable': repr.BernoulliParam(),
         # 'A-enable': repr.BernoulliParam(),
+        'no-op1': repr.DirichletParam(len(symbols)),
+        'no-op2': repr.DirichletParam(len(symbols)),
+        'no-op3': repr.BetaParam(),
+        'no-op4': repr.BetaParam(),
+        # 'no-op5': repr.BernoulliParam(),
+        # 'no-op6': repr.BernoulliParam(),
     })
 
     for it in range(iterations):
