@@ -15,7 +15,7 @@ import dask.multiprocessing
 import time
 import repr
 
-symbols = 'SJA+-[]<>\t'  # \t for end-of-sequence
+symbols = 'SJKA+-[]<>\t'  # \t for end-of-sequence
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -42,14 +42,15 @@ def sample_system(ind):
         return min * math.exp(p * math.log(max/min))
 
     system = {
-        'w': 67,
-        'h': 126,
+        'w': 67*4,
+        'h': 126*4,
         'axiom': sample_rule(ind['axiom']),
         # 'lineLength': logrange(ind['lineLength'], 1, 40),
         # 'lineWidth': logrange(ind['lineWidth'], 1, 40),
-        'lineLength': 5,
-        'lineWidth': 3,
-        'lineWidth_step': logrange(ind['lineWidth_step'], 1.0, 5.0),
+        'limit': 5000,
+        'lineLength': 5*4,
+        'lineWidth': 3*4,
+        'scaleStep': logrange(ind['scaleStep'], 1.0, 1.2),
         'angle': logrange(ind['angle'], 5, 200),
         'angle0': ind['angle0'] * 180,
         'iterations': math.floor(ind['iterations'] * 5),
@@ -138,7 +139,7 @@ def main():
         # 'A': repr.DirichletParam(len(symbols)),
         'iterations': repr.BetaParam(),
         'lineWidth': repr.BetaParam(),
-        'lineWidth_step': repr.BetaParam(),
+        'scaleStep': repr.BetaParam(),
         'lineLength': repr.BetaParam(),
         'angle': repr.BetaParam(),
         'angle0': repr.BetaParam(),
@@ -185,8 +186,9 @@ def main():
         print(50 * '-')
         print('best ind:')
         pprint.pprint(sample_inds[0])
-        print('min loss was', sample_loss.min())
-        print('mean loss was', sample_loss.mean())
+        print('min loss   :', sample_loss.min())
+        print('median loss:', np.median(sample_loss))
+        print('mean loss  :', sample_loss.mean())
         # plt.ion()
         # plt.figure(1)
         # plt.clf()

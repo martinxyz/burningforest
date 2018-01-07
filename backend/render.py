@@ -31,8 +31,8 @@ def render(system):
 
     line_length = system.get('lineLength', 20)
     phi_step = system.get('angle', 20) / 360 * 2 * math.pi
-    lineWidth = system.get('lineWidth', 2)
-    lineWidth_step = system.get('lineWidth_step', 1.2)
+    line_width = system.get('lineWidth', 2)
+    scale_step = system.get('scaleStep', 1.2)
     x = w / 2
     y = 3 * h / 4
     phi = system.get('angle0', -180) / 360 * 2 * math.pi
@@ -43,14 +43,18 @@ def render(system):
         if c == '?': pass
         elif c == '+': phi += phi_step
         elif c == '-': phi -= phi_step
-        elif c == '>': lineWidth *= lineWidth_step
-        elif c == '<': lineWidth /= lineWidth_step
-        elif c == '[': stack.append((x, y, phi, lineWidth))
+        elif c == '>':
+            line_width *= scale_step
+            line_length *= scale_step
+        elif c == '<':
+            line_width /= scale_step
+            line_length /= scale_step
+        elif c == '[': stack.append((x, y, phi, line_width, line_length))
         elif c == ']':
             if stack:
-                x, y, phi, lineWidth = stack.pop()
+                x, y, phi, line_width, line_length = stack.pop()
         else:
-            ctx.set_line_width(lineWidth)
+            ctx.set_line_width(line_width)
             ctx.move_to(x, y)
             # ctx.set_line_width(0.1 + random.random() * 5)
             x += line_length * math.cos(phi)
