@@ -5,7 +5,7 @@ import random
 
 
 def expand(system):
-    limit = system.get('limit', 5000)
+    limit = system.get('limit', 2000)
     s = system['axiom']
     rules = system['rules']
     iterations = system.get('iterations', 3)
@@ -17,8 +17,9 @@ def expand(system):
             s_new += rules.get(c, c)
         s = s_new
         if len(s) > limit:
-            break
-    return s[:limit]
+            raise ValueError('expansion too long')
+            # break
+    return s  # [:limit]
 
 
 def render(system):
@@ -30,10 +31,11 @@ def render(system):
 
     line_length = system.get('lineLength', 20)
     phi_step = system.get('angle', 20) / 360 * 2 * math.pi
-    ctx.set_line_width(system.get('lineWidth', 2))
+    lineWidth = system.get('lineWidth', 2)
+    lineWidth_step = system.get('lineWidth_step', 1.2)
     x = w / 2
     y = 3 * h / 4
-    phi = - math.pi
+    phi = system.get('angle0', -180) / 360 * 2 * math.pi
 
     ctx.move_to(x, y)
     stack = []
@@ -41,11 +43,14 @@ def render(system):
         if c == '?': pass
         elif c == '+': phi += phi_step
         elif c == '-': phi -= phi_step
-        elif c == '[': stack.append((x, y, phi))
+        elif c == '>': lineWidth *= lineWidth_step
+        elif c == '<': lineWidth /= lineWidth_step
+        elif c == '[': stack.append((x, y, phi, lineWidth))
         elif c == ']':
             if stack:
-                x, y, phi = stack.pop()
+                x, y, phi, lineWidth = stack.pop()
         else:
+            ctx.set_line_width(lineWidth)
             ctx.move_to(x, y)
             # ctx.set_line_width(0.1 + random.random() * 5)
             x += line_length * math.cos(phi)

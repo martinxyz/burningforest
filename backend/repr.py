@@ -29,7 +29,17 @@ class DirichletParam:
         return np.random.dirichlet(self.alpha)
 
     def update(self, samples):
-        mle = dirichlet.mle(np.array(samples))
+        try:
+            mle = dirichlet.mle(np.array(samples))
+        except Exception as err:
+            print(err)
+            mle = self.alpha
+
+        # avoid the above exception in the first place
+        if mle.sum() > 1000:
+            mle *= 1000 / mle.sum()
+        mle = mle.clip(0.1, None)
+
         self.alpha = 0.5 * self.alpha + 0.5 * mle
 
     def __repr__(self):
