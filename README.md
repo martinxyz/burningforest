@@ -17,3 +17,12 @@ yarn run dev
 cd labelstore
 env FLASK_APP=labelstore.py FLASK_DEBUG=1 flask run
 ```
+
+or using pipenv and fish
+
+```
+cd labelstore
+pipenv install
+env FLASK_APP=labelstore.py FLASK_DEBUG=1 pipenv run flask run
+```
+
