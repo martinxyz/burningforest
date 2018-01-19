@@ -1,4 +1,4 @@
-import cairo
+import cairocffi as cairo
 import math
 import numpy
 import random
@@ -25,7 +25,7 @@ def expand(system):
 def render(system):
     w, h = system.get('w', 200), system.get('h', 200)
     s = expand(system)
-    surface = cairo.ImageSurface(cairo.Format.ARGB32, w, h)
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
     ctx = cairo.Context(surface)
     ctx.set_line_width(3)
 

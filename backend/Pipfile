@@ -1,0 +1,21 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+dirichlet-mle = {git = "https://github.com/ericsuh/dirichlet.git"}
+dask = "*"
+cairocffi = "*"
+matplotlib = "*"
+cloudpickle = "*"
+scipy = "*"
+pillow = "*"
+toolz = "*"
+
+
+[dev-packages]
+

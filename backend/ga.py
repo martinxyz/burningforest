@@ -11,9 +11,11 @@ import os
 import json
 import pprint
 import dask
+import dask.delayed
 import dask.multiprocessing
 import time
 import repr
+
 
 symbols = 'SJKA+-[]<>\t'  # \t for end-of-sequence
 
