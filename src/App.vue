@@ -9,8 +9,11 @@
           <l-hello/>
         </div>
       </b-tab>
-      <b-tab title="GA" active>
+      <b-tab title="GA">
         <l-ga/>
+      </b-tab>
+      <b-tab title="Ranking" active>
+        <l-ranking/>
       </b-tab>
     </b-tabs>
   </div>
@@ -19,11 +22,13 @@
 <script>
 import HelloL from './components/HelloL'
 import GA from './components/GA'
+import Ranking from './components/Ranking'
 
 export default {
   components: {
     'l-hello': HelloL,
-    'l-ga': GA
+    'l-ga': GA,
+    'l-ranking': Ranking
   }
 }
 </script>

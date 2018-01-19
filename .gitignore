@@ -17,3 +17,4 @@ yarn-error.log*
 ga-test-*.png
 __pycache__
 /backend/output*
+venv

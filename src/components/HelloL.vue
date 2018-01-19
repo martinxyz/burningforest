@@ -1,7 +1,9 @@
 <template>
   <div class="layout-row">
     <div class="tile layout-column inputs">
+      <label>Iterations <input v-model="iterations"></label>
       <label>Angle <input v-model="angle"></label>
+      <label>LineLength <input v-model="lineLength"></label>
       <label>Start <input v-model="axiom"></label>
       <label v-for="s in usedSymbols">{{s}} <input v-model="rules[s]"></label>
       <div class="layout-column expansions">
@@ -24,6 +26,8 @@
       return {
         angle: '10',
         axiom: 'GGGGGG',
+        iterations: '4',
+        lineLength: '20',
         rules: {
           G: 'G++[F]',
           F: '-----F---[G]'
@@ -54,7 +58,8 @@
           axiom: this.axiom,
           rules: _.clone(this.rules),
           angle: this.angle,
-          iterations: 3
+          iterations: this.iterations,
+          lineLength: this.lineLength
         }
       }
     }
@@ -62,14 +67,6 @@
 </script>
 
 <style scoped>
-  .layout-row {
-    display: flex;
-    flex-direction: row;
-  }
-  .layout-column {
-    display: flex;
-    flex-direction: column;
-  }
   .tile {
     width: 800px;
     flex-grow: 1;

@@ -7,6 +7,7 @@ import DisplayL from './components/DisplayL'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './common.css'
 
 Vue.use(BootstrapVue)
 

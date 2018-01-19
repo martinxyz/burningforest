@@ -1,5 +1,5 @@
 export function expand (axiom, rules) {
-  const limit = 5000
+  const limit = 10000
   let result = ''
   for (let i = 0, len = axiom.length; i < len; i++) {
     let c = axiom.charAt(i)

@@ -25,7 +25,7 @@ export function createSample () {
 
 export function createGoodSamples () {
   let samples = []
-  const N = 1000
+  const N = 100
   for (let i = 0; i < N; i++) {
     let sample = createSample()
     sample.score = evaluate(sample)
