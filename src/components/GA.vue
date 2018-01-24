@@ -1,12 +1,14 @@
 <template>
-  <div class="layout-row">
+  <div>
     <div>
       <img src="../assets/template1.png">
       <b-button variant="primary" v-on:click="resample">Try Again!</b-button>
     </div>
-    <span v-for="s in sample">
-      <l-display :system="s" width="67" height="126" />
-    </span>
+    <div>
+      <span v-for="s in sample">
+        <l-display :system="s" width="67" height="126" />
+      </span>
+    </div>
   </div>
 </template>
 
@@ -23,12 +25,6 @@
     },
     methods: {
       resample () {
-        /*
-        this.sample = []
-        for (let i = 0; i < 84; i++) {
-          this.sample.push(ga.createSample())
-        }
-        */
         this.sample = ga.createGoodSamples()
       }
     }

@@ -23,9 +23,8 @@ export function createSample () {
   }
 }
 
-export function createGoodSamples () {
+export function createGoodSamples (N = 100) {
   let samples = []
-  const N = 100
   for (let i = 0; i < N; i++) {
     let sample = createSample()
     sample.score = evaluate(sample)
@@ -34,7 +33,7 @@ export function createGoodSamples () {
   samples.sort((a, b) => a.score < b.score)
   // _.sortBy(samples, 'score')
   // console.log(score)
-  return samples.slice(0, N / 10)
+  return samples.slice(0, N / 2)
 }
 
 function evaluate (system) {
@@ -55,6 +54,6 @@ function evaluate (system) {
     score += data[i]
   }
 
-  console.log('score', score)
+  // console.log('score', score)
   return score
 }
