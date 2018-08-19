@@ -1,8 +1,7 @@
 <template>
   <div class="layout-column" v-on:keydown="key" v-on:keyup="key">
-    <!-- <h1>{{debug}}</h1> -->
     <h1>Select Preference</h1>
-    <div class="layout-row pair" v-for="p in pairs">
+    <div class="layout-row center" v-for="p in pairs">
       <div>
         <h3>A</h3>
         <l-display :system="p.a" width="p.a.width" height="p.a.height" />
@@ -12,9 +11,9 @@
         <l-display :system="p.b" width="p.b.width" height="p.b.height" />
       </div>
     </div>
-    <div class="layout-row buttons">
+    <div class="layout-row center">
       <b-button ref="a" v-on:click="prefer_a">prefer<br><b>A</b></b-button>
-      <div class="layout-column buttons">
+      <div class="layout-column center">
         <b-button ref="same" v-on:click="prefer_same">same<br><b>S</b></b-button>
         <b-button ref="skip" v-on:click="prefer_skip">skip<br><b>SPC</b></b-button>
       </div>
@@ -24,27 +23,17 @@
 </template>
 
 <style scoped>
-  .pair {
+  .center {
     justify-content: center;
     text-align: center;
-  },
-  /* .pair > div { */
-  /* max-width: 10vw; */
-  /* } */
-  /* .pair.active > div { */
-  /* max-width: 100vw; */
-  /* } */
-  .buttons {
-    justify-content: center;
   }
   button {
     margin: 5px;
     min-width: 100px;
-    transition: all 0.3s ease;
-    /* background-color: #CCC; */
+    transition: background-color 0.3s ease;
   }
   button.blink {
-    transition: none 0s;
+    transition: none;
     background-color: #000;
   }
 </style>
@@ -70,7 +59,6 @@
           a: dummy,
           b: dummy
         }],
-        debug: '...',
         nextSample: [dummy, dummy]
       }
     },
@@ -81,11 +69,10 @@
     methods: {
       resample () {
         api.sample().then((res) => {
-          this.debug = res.axiom
+          console.log('todo: process api sample response', res)
         })
         this.pairs[0].a = this.nextSample[0]
         this.pairs[0].b = this.nextSample[1]
-        console.log('the new a:', this.pairs.a)
         setTimeout(() => {
           this.nextSample = ga.createGoodSamples(10)
         }, 0)
@@ -94,14 +81,14 @@
         api.postit({foo: 'bar'})
       },
       key (ev) {
-        /* console.log('ev', ev) */
-        let keyMap = {
+        // console.log('ev', ev)
+        let methodKeys = {
           prefer_a: ['a', 'ArrowLeft', 'h'],
           prefer_b: ['b', 'ArrowRight', 'l'],
           prefer_same: ['s', 'ArrowUp', 'k'],
           prefer_skip: [' ', 'ArrowDown', 'j']
         }
-        _.forEach(keyMap, (keys, method) => {
+        _.forEach(methodKeys, (keys, method) => {
           if (keys.includes(ev.key)) {
             if (ev.type === 'keydown' && !ev.repeat) {
               this[method]()
@@ -112,19 +99,15 @@
         })
       },
       prefer_a () {
-        console.log('A better!')
         this.blink(this.$refs.a)
       },
       prefer_b () {
-        console.log('B better!')
         this.blink(this.$refs.b)
       },
       prefer_same () {
-        console.log('Same!')
         this.blink(this.$refs.same)
       },
       prefer_skip () {
-        console.log('Skip!')
         this.blink(this.$refs.skip)
       },
       blink (el) {
