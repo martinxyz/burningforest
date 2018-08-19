@@ -21,6 +21,28 @@ class BernoulliParam:
         return 'Param(p=%r)' % self.p
 
 
+class CategoricalParam:
+    def __init__(self, choices):
+        choices = list(choices)
+        N = len(choices)
+        assert N == len(set(choices))
+        self.choices = choices
+        self.probs = N*[1/N]
+
+    def sample(self):
+        return np.random.choice(self.choices, p=self.probs)
+
+    def update(self, samples):
+        probs_mle = [samples.count(c) / len(samples) for c in self.choices]
+        assert abs(sum(probs_mle) - 1.0) < 0.000001
+        self.probs = [0.5 * p + 0.5 * p_mle
+                      for p, p_mle in zip(self.probs, probs_mle)]
+
+    def __repr__(self):
+        return 'Param(probs=%r)' % self.probs
+
+
+
 class DirichletParam:
     def __init__(self, N):
         self.alpha = np.ones(N)

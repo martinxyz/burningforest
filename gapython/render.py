@@ -1,7 +1,7 @@
-import cairocffi as cairo
+# import cairocffi as cairo
+import cairo
 import math
 import numpy
-import random
 
 
 def expand(system):
@@ -22,11 +22,22 @@ def expand(system):
     return s  # [:limit]
 
 
+surface = None
+ctx = None
 def render(system):
+    global surface, ctx
     w, h = system.get('w', 200), system.get('h', 200)
     s = expand(system)
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
-    ctx = cairo.Context(surface)
+    if surface is None:
+        # surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
+        surface = cairo.ImageSurface(cairo.Format.ARGB32, w, h)
+        ctx = cairo.Context(surface)
+
+    ctx.save()
+    # clear
+    # ctx.set_source_rgba(255, 8, 255, 255)
+    # ctx.paint()
+
     ctx.set_line_width(3)
 
     line_length = system.get('lineLength', 20)
@@ -71,11 +82,16 @@ def render(system):
                 # ctx.arc(x, y, line_width, 0, 2*math.pi)
                 # ctx.fill()
 
-    return numpy.ndarray(
+    res = numpy.ndarray(
       shape=(h, w, 4),
       dtype=numpy.uint8,
       buffer=surface.get_data()
     )[:,:,3]
+    res = res.copy()
+    ctx.restore()
+    surface = None
+    ctx = None
+    return res
 
 
 if __name__ == '__main__':
