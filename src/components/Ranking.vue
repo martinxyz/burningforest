@@ -1,6 +1,7 @@
 <template>
   <div class="layout-column" v-on:keydown="key" v-on:keyup="key">
     <h1>Select Preference</h1>
+	<small>Backend not connected...</small>
     <div class="layout-row center" v-for="p in pairs">
       <div>
         <h3>A</h3>

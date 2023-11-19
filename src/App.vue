@@ -5,14 +5,14 @@
         <!-- <div id="topbar"> -->
         <!-- <img src="./assets/logo.svg" style="height: 120px;"> -->
         <!-- </div> -->
-        <div id="main">
+        <div id="main" active>
           <l-hello/>
         </div>
       </b-tab>
       <b-tab title="GA">
         <l-ga/>
       </b-tab>
-      <b-tab title="Ranking" active>
+      <b-tab title="Ranking">
         <l-ranking/>
       </b-tab>
     </b-tabs>

@@ -25,7 +25,7 @@ class CategoricalParam:
     def __init__(self, choices):
         choices = list(choices)
         N = len(choices)
-        assert N == len(set(choices))
+        assert N == len(set(choices)), 'duplicates not allowed'
         self.choices = choices
         self.probs = N*[1/N]
 
@@ -40,7 +40,6 @@ class CategoricalParam:
 
     def __repr__(self):
         return 'Param(probs=%r)' % self.probs
-
 
 
 class DirichletParam:

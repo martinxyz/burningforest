@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <img src="../assets/template1.png">
-      <b-button variant="primary" v-on:click="resample">Try Again!</b-button>
+      <!-- <img src="../assets/template1.png"> -->
+      <b-button variant="primary" v-on:click="resample">Generate Again!</b-button>
     </div>
     <div>
       <span v-for="s in sample">
